@@ -134,7 +134,7 @@ function populateEpisodes(episodes) : void {
 }
 
 $showsList.on("click",async  function(evt){
-  
+  $episodesList.empty()
   let showDiv = evt.target.closest(".Show")
   
   console.log("button clicked", $(showDiv).data("showId"));
@@ -143,5 +143,5 @@ $showsList.on("click",async  function(evt){
   console.log("Episodes ==>", episodes)
   
   populateEpisodes(episodes);
-  
+
 } )

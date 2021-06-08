@@ -12885,6 +12885,7 @@ $showsList.on("click", function (evt) {
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
+                    $episodesList.empty();
                     showDiv = evt.target.closest(".Show");
                     console.log("button clicked", $(showDiv).data("showId"));
                     return [4 /*yield*/, getEpisodesOfShow($(showDiv).data("showId"))];
