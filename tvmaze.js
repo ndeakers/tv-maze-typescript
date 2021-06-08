@@ -12775,6 +12775,7 @@ var $ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js"
 var $showsList = $("#showsList");
 var $episodesArea = $("#episodesArea");
 var $searchForm = $("#searchForm");
+var $episodesList = $("#episodesList");
 var BASE_URL = "http://api.tvmaze.com/";
 var DEFAULT_IMAGE_URL = "https://static1.colliderimages.com/wordpress/wp-content/uploads/2020/01/fast-and-furious-9-vin-diesel-poster-379x600.jpg?q=50&fit=crop&w=750&dpr=1.5";
 function getShowsByTerm(term) {
@@ -12845,9 +12846,39 @@ $searchForm.on("submit", function (evt) {
 /** Given a show ID, get from API and return (promise) array of episodes:
  *      { id, name, season, number }
  */
-// async function getEpisodesOfShow(id) { }
-/** Write a clear docstring for this function... */
-// function populateEpisodes(episodes) { }
+function getEpisodesOfShow(id) {
+    return __awaiter(this, void 0, void 0, function () {
+        var resp, episodes;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, axios_1.default.get(BASE_URL + "shows/" + id + "/episodes")];
+                case 1:
+                    resp = _a.sent();
+                    episodes = resp.data.map(function (e) {
+                        return {
+                            id: e.id,
+                            name: e.name,
+                            season: e.season,
+                            number: e.number
+                        };
+                    });
+                    return [2 /*return*/, episodes];
+            }
+        });
+    });
+}
+/** for each episode in episodes list,
+ * append episode LI element to $episodesList
+ */
+function populateEpisodes(episodes) {
+    for (var _i = 0, episodes_1 = episodes; _i < episodes_1.length; _i++) {
+        var episode = episodes_1[_i];
+        var $episode = $("<li>" + episode.name + "\n      (Season" + episode.season + ", \n      Episode" + episode.number + ")\n      </li>");
+        $episodesList.append($episode);
+        console.log($episode);
+    }
+}
+$("");
 
 
 /***/ })

@@ -5,6 +5,8 @@ import { ids } from "webpack";
 const $showsList = $("#showsList");
 const $episodesArea = $("#episodesArea");
 const $searchForm = $("#searchForm");
+const $episodesList = $("#episodesList");
+
 const BASE_URL = "http://api.tvmaze.com/";
 const DEFAULT_IMAGE_URL = "https://static1.colliderimages.com/wordpress/wp-content/uploads/2020/01/fast-and-furious-9-vin-diesel-poster-379x600.jpg?q=50&fit=crop&w=750&dpr=1.5"
 
@@ -87,12 +89,46 @@ $searchForm.on("submit", async function (evt) {
 });
 
 
+interface Episode {
+  id: number,
+  name: string,
+  season: string,
+  number: string
+}
 /** Given a show ID, get from API and return (promise) array of episodes:
  *      { id, name, season, number }
  */
 
-// async function getEpisodesOfShow(id) { }
+async function getEpisodesOfShow(id: number): Promise<Episode[]> {
+  const resp = await axios.get(`${BASE_URL}shows/${id}/episodes`)
 
-/** Write a clear docstring for this function... */
+  const episodes = resp.data.map((e: Episode) => {
+    return {
+      id: e.id,
+      name: e.name,
+      season: e.season,
+      number: e.number
+    }
+  })
+  return episodes;
+}
 
-// function populateEpisodes(episodes) { }
+/** for each episode in episodes list, 
+ * append episode LI element to $episodesList
+ */
+
+
+function populateEpisodes(episodes) : void {
+  for (let episode of episodes) {
+    const $episode = $(
+      `<li>${episode.name}
+      (Season${episode.season}, 
+      Episode${episode.number})
+      </li>`
+    );
+    $episodesList.append($episode);
+    console.log($episode)
+  }
+}
+
+$("")
