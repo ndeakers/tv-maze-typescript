@@ -50,7 +50,7 @@ function populateShows(shows) {
   for (let show of shows) {
     const $show = $(
       `<div data-show-id="${show.id}" class="Show col-md-12 col-lg-6 mb-4">
-         <div class="media">
+         <div class="media" attribute=${show.id}>
            <img
               src=${show.image}
               alt=${show.name}
@@ -110,6 +110,7 @@ async function getEpisodesOfShow(id: number): Promise<Episode[]> {
       number: e.number
     }
   })
+  console.log("episodes ==>", episodes)
   return episodes;
 }
 
@@ -127,8 +128,20 @@ function populateEpisodes(episodes) : void {
       </li>`
     );
     $episodesList.append($episode);
-    console.log($episode)
+    
   }
+  $episodesArea.show()
 }
 
-$("")
+$showsList.on("click",async  function(evt){
+  
+  let showDiv = evt.target.closest(".Show")
+  
+  console.log("button clicked", $(showDiv).data("showId"));
+  
+  let episodes = await getEpisodesOfShow($(showDiv).data("showId"));
+  console.log("Episodes ==>", episodes)
+  
+  populateEpisodes(episodes);
+  
+} )

@@ -12805,7 +12805,7 @@ function populateShows(shows) {
     $showsList.empty();
     for (var _i = 0, shows_1 = shows; _i < shows_1.length; _i++) {
         var show = shows_1[_i];
-        var $show = $("<div data-show-id=\"" + show.id + "\" class=\"Show col-md-12 col-lg-6 mb-4\">\n         <div class=\"media\">\n           <img\n              src=" + show.image + "\n              alt=" + show.name + "\n              class=\"w-25 mr-3\">\n           <div class=\"media-body\">\n             <h5 class=\"text-primary\">" + show.name + "</h5>\n             <div><small>" + show.summary + "</small></div>\n             <button class=\"btn btn-outline-light btn-sm Show-getEpisodes\">\n               Episodes\n             </button>\n           </div>\n         </div>\n       </div>\n      ");
+        var $show = $("<div data-show-id=\"" + show.id + "\" class=\"Show col-md-12 col-lg-6 mb-4\">\n         <div class=\"media\" attribute=" + show.id + ">\n           <img\n              src=" + show.image + "\n              alt=" + show.name + "\n              class=\"w-25 mr-3\">\n           <div class=\"media-body\">\n             <h5 class=\"text-primary\">" + show.name + "</h5>\n             <div><small>" + show.summary + "</small></div>\n             <button class=\"btn btn-outline-light btn-sm Show-getEpisodes\">\n               Episodes\n             </button>\n           </div>\n         </div>\n       </div>\n      ");
         $showsList.append($show);
     }
 }
@@ -12862,6 +12862,7 @@ function getEpisodesOfShow(id) {
                             number: e.number
                         };
                     });
+                    console.log("episodes ==>", episodes);
                     return [2 /*return*/, episodes];
             }
         });
@@ -12875,10 +12876,27 @@ function populateEpisodes(episodes) {
         var episode = episodes_1[_i];
         var $episode = $("<li>" + episode.name + "\n      (Season" + episode.season + ", \n      Episode" + episode.number + ")\n      </li>");
         $episodesList.append($episode);
-        console.log($episode);
     }
+    $episodesArea.show();
 }
-$("");
+$showsList.on("click", function (evt) {
+    return __awaiter(this, void 0, void 0, function () {
+        var showDiv, episodes;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    showDiv = evt.target.closest(".Show");
+                    console.log("button clicked", $(showDiv).data("showId"));
+                    return [4 /*yield*/, getEpisodesOfShow($(showDiv).data("showId"))];
+                case 1:
+                    episodes = _a.sent();
+                    console.log("Episodes ==>", episodes);
+                    populateEpisodes(episodes);
+                    return [2 /*return*/];
+            }
+        });
+    });
+});
 
 
 /***/ })
