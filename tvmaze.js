@@ -12862,7 +12862,6 @@ function getEpisodesOfShow(id) {
                             number: e.number
                         };
                     });
-                    console.log("episodes ==>", episodes);
                     return [2 /*return*/, episodes];
             }
         });
@@ -12870,6 +12869,7 @@ function getEpisodesOfShow(id) {
 }
 /** for each episode in episodes list,
  * append episode LI element to $episodesList
+ * and display $episodeList on DOM
  */
 function populateEpisodes(episodes) {
     for (var _i = 0, episodes_1 = episodes; _i < episodes_1.length; _i++) {
@@ -12879,19 +12879,21 @@ function populateEpisodes(episodes) {
     }
     $episodesArea.show();
 }
+/**  when show card is clicked, append it's episodes as a list
+ *   on bottom of page, first clearing out any previously populated episodes
+*
+*/
 $showsList.on("click", function (evt) {
     return __awaiter(this, void 0, void 0, function () {
-        var showDiv, episodes;
+        var showId, episodes;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     $episodesList.empty();
-                    showDiv = evt.target.closest(".Show");
-                    console.log("button clicked", $(showDiv).data("showId"));
-                    return [4 /*yield*/, getEpisodesOfShow($(showDiv).data("showId"))];
+                    showId = evt.target.closest(".Show").data("showId");
+                    return [4 /*yield*/, getEpisodesOfShow(showId)];
                 case 1:
                     episodes = _a.sent();
-                    console.log("Episodes ==>", episodes);
                     populateEpisodes(episodes);
                     return [2 /*return*/];
             }

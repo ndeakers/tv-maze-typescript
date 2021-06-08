@@ -1,3 +1,4 @@
+
 import axios from "axios"
 import * as $ from 'jquery';
 import { ids } from "webpack";
@@ -23,14 +24,14 @@ interface Show {
   id: number,
   name: string,
   summary: string,
-  image: string
+  image: {original:string}
 }
 
 async function getShowsByTerm(term: string): Promise<Show[]> { //questionable
   // ADD: Remove placeholder & make request to TVMaze search shows API.
   const response = await axios.get(`${BASE_URL}search/shows?q=${term}`);
   console.log("getShowsByTerm response --->", response);
-  const shows: Array<Show> = response.data.map(s => {
+  const shows: Array<Show> = response.data.map((s:{show:Show}) => {
     if (!s.show.image) {
       return { id: s.show.id, name: s.show.name, summary: s.show.summary, image: DEFAULT_IMAGE_URL }
     } else {
@@ -44,7 +45,7 @@ async function getShowsByTerm(term: string): Promise<Show[]> { //questionable
 
 /** Given list of shows, create markup for each and to DOM */
 
-function populateShows(shows) {
+function populateShows(shows:Show[]) {
   $showsList.empty();
 
   for (let show of shows) {
@@ -110,16 +111,15 @@ async function getEpisodesOfShow(id: number): Promise<Episode[]> {
       number: e.number
     }
   })
-  console.log("episodes ==>", episodes)
   return episodes;
 }
 
 /** for each episode in episodes list, 
  * append episode LI element to $episodesList
+ * and display $episodeList on DOM
  */
 
-
-function populateEpisodes(episodes) : void {
+function populateEpisodes(episodes: Episode[]): void {
   for (let episode of episodes) {
     const $episode = $(
       `<li>${episode.name}
@@ -128,20 +128,17 @@ function populateEpisodes(episodes) : void {
       </li>`
     );
     $episodesList.append($episode);
-    
   }
-  $episodesArea.show()
+  $episodesArea.show();
 }
 
-$showsList.on("click",async  function(evt){
-  $episodesList.empty()
-  let showDiv = evt.target.closest(".Show")
-  
-  console.log("button clicked", $(showDiv).data("showId"));
-  
-  let episodes = await getEpisodesOfShow($(showDiv).data("showId"));
-  console.log("Episodes ==>", episodes)
-  
+/**  when show card is clicked, append it's episodes as a list 
+ *   on bottom of page, first clearing out any previously populated episodes
+*    
+*/
+$showsList.on("click", async function (evt:JQuery.ClickEvent): Promise<void> {
+  $episodesList.empty();
+  let showId = evt.target.closest(".Show").data("showId");
+  let episodes = await getEpisodesOfShow(showId);
   populateEpisodes(episodes);
-
-} )
+});
